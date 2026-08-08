@@ -1951,7 +1951,7 @@ button.pdp-sheet__cta:hover {
   max-width: 100% !important;
   inset-inline: 0 !important;
   box-sizing: border-box !important;
-  /* keep translateY from .is-open — never fixed/full-viewport */
+  /* keep translateY from .is-open ï¿½ never fixed/full-viewport */
 }
 .cart-drawer .checkout-flow--delivery .checkout-sheet,
 .cart-drawer .checkout-flow--delivery .checkout-cta,
