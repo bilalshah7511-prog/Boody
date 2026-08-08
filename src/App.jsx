@@ -63,6 +63,13 @@ export default function App() {
   const [savedCardBrand, setSavedCardBrand] = useState(null);
 
   const [deliveryMode, setDeliveryMode] = useState('pickup');
+  const [addrFullName, setAddrFullName] = useState('');
+  const [addrCountry, setAddrCountry] = useState('');
+  const [addrLine1, setAddrLine1] = useState('');
+  const [addrLine2, setAddrLine2] = useState('');
+  const [addrCity, setAddrCity] = useState('');
+  const [addrState, setAddrState] = useState('');
+  const [addrZip, setAddrZip] = useState('');
   const [pickupChosen, setPickupChosen] = useState(null);
   const [showPickupTimes, setShowPickupTimes] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -275,7 +282,19 @@ export default function App() {
         `${pickupChosen.name} · ${dateLabel}, ${selectedTime}`,
       );
     } else {
-      setDeliveryStatus('Ship to doorstep');
+      const name = String(addrFullName || '').trim();
+      const line1 = String(addrLine1 || '').trim();
+      const city = String(addrCity || '').trim();
+      const state = String(addrState || '').trim();
+      const zip = String(addrZip || '').trim();
+      if (!name || !addrCountry || !line1 || !city || !state || !zip) {
+        playSheetFeedback('error');
+        return;
+      }
+      const line2 = String(addrLine2 || '').trim();
+      const cityLine = [city, state].filter(Boolean).join(', ') + (zip ? ` ${zip}` : '');
+      const addressText = [line1, line2, cityLine].filter(Boolean).join(', ');
+      setDeliveryStatus(`${name} · ${addressText}`);
     }
     markComplete('delivery');
     setSheetFeedback(null);
@@ -1091,24 +1110,24 @@ export default function App() {
               ) : (
                 <div className="delivery-panel">
                   <label className="checkout-label">Full name</label>
-                  <input type="text" className="checkout-input" placeholder="John Doe" />
+                  <input type="text" className="checkout-input" placeholder="John Doe" value={addrFullName} onChange={(e) => setAddrFullName(e.target.value)} />
                   <label className="checkout-label">Country or region</label>
-                  <select className="checkout-input checkout-select" defaultValue="">
+                  <select className="checkout-input checkout-select" value={addrCountry} onChange={(e) => setAddrCountry(e.target.value)}>
                     <option value="" disabled>Select country</option>
                     <option value="USA">United States</option>
                     <option value="Canada">Canada</option>
                     <option value="Germany">Germany</option>
                   </select>
                   <label className="checkout-label">Address line 1</label>
-                  <input type="text" className="checkout-input" placeholder="123 Maison Blvd" />
+                  <input type="text" className="checkout-input" placeholder="123 Maison Blvd" value={addrLine1} onChange={(e) => setAddrLine1(e.target.value)} />
                   <label className="checkout-label">Address line 2</label>
-                  <input type="text" className="checkout-input" placeholder="Apartment, suite, etc (optional)" />
+                  <input type="text" className="checkout-input" placeholder="Apartment, suite, etc (optional)" value={addrLine2} onChange={(e) => setAddrLine2(e.target.value)} />
                   <label className="checkout-label">City</label>
-                  <input type="text" className="checkout-input" placeholder="Enter city" />
+                  <input type="text" className="checkout-input" placeholder="Enter city" value={addrCity} onChange={(e) => setAddrCity(e.target.value)} />
                   <div className="checkout-input-row">
                     <div>
                       <label className="checkout-label">State</label>
-                      <select className="checkout-input checkout-select" defaultValue="">
+                      <select className="checkout-input checkout-select" value={addrState} onChange={(e) => setAddrState(e.target.value)}>
                         <option value="" disabled>Select state</option>
                         {usStates.map((s) => (
                           <option key={s.code} value={s.code}>
@@ -1119,7 +1138,7 @@ export default function App() {
                     </div>
                     <div>
                       <label className="checkout-label">Zip code</label>
-                      <input type="text" className="checkout-input" placeholder="10012" />
+                      <input type="text" className="checkout-input" placeholder="10012" value={addrZip} onChange={(e) => setAddrZip(e.target.value)} />
                     </div>
                   </div>
                 </div>
